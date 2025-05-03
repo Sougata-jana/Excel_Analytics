@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '../../store/authSlice';
+import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -30,6 +31,16 @@ const Login = () => {
 
     const handleSubmit = async e => {
         e.preventDefault();
+        try {
+            const response = await axios.post(
+                'http://localhost:5000/api/auth/login',
+                { email, password },
+                { withCredentials: true } // Include credentials in the request
+            );
+            console.log(response.data);
+        } catch (error) {
+            console.error('Login error:', error);
+        }
         dispatch(login({ email, password }));
     };
 
@@ -90,4 +101,4 @@ const Login = () => {
     );
 };
 
-export default Login; 
+export default Login;

@@ -1,17 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
 // Create axios instance with base URL and default headers
 const api = axios.create({
     baseURL: 'http://localhost:5000/api',
     headers: {
         'Content-Type': 'application/json'
-    }
+    },
+    withCredentials: true
 });
 
 const initialState = {
     token: localStorage.getItem('token'),
-    isAuthenticated: null,
+    isAuthenticated: false,
     user: null,
     loading: false,
     error: null
@@ -42,25 +42,19 @@ export const register = createAsyncThunk(
     }
 );
 
-// Login User
 export const login = createAsyncThunk(
     'auth/login',
-    async ({ email, password }, { rejectWithValue }) => {
+    async (credentials, { rejectWithValue }) => {
         try {
-            const res = await api.post('/auth/login', {
-                email,
-                password
-            });
-            
-            if (res.data.token) {
-                localStorage.setItem('token', res.data.token);
+            const response = await api.post('/auth/login', credentials);
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
             }
-            
-            return res.data;
+            return response.data;
         } catch (err) {
             console.error('Login error:', err.response?.data || err.message);
             return rejectWithValue(
-                err.response?.data?.msg || 'Login failed. Please check your credentials.'
+                err.response?.data?.msg || 'Login failed. Please try again.'
             );
         }
     }
@@ -184,4 +178,4 @@ const authSlice = createSlice({
 });
 
 export const { logout, clearError } = authSlice.actions;
-export default authSlice.reducer; 
+export default authSlice.reducer;

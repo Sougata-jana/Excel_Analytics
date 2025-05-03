@@ -39,7 +39,16 @@ const Register = () => {
             setLocalError('Passwords do not match');
             return;
         }
-        dispatch(register({ name, email, password }));
+        try {
+            await axios.post(
+                'http://localhost:5000/api/auth/register',
+                { name, email, password },
+                { withCredentials: true } // Include credentials in the request
+            );
+            dispatch(register({ name, email, password }));
+        } catch (error) {
+            console.error('Registration error:', error);
+        }
     };
 
     return (
@@ -125,4 +134,4 @@ const Register = () => {
     );
 };
 
-export default Register; 
+export default Register;

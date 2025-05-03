@@ -4,7 +4,7 @@
   "description": "A powerful platform for Excel file analytics and visualization",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "cd client && npx react-app-rewired start",
     "dev": "nodemon server.js",
     "client": "cd client && npm start",
     "dev:full": "concurrently \"npm run dev\" \"npm run client\""
